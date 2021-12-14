@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: '8195'
+    kompose.cmd: kompose convert
+    kompose.version: 1.24.0 (4a2a0458)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: delfin-exporter
+  name: delfin-exporter
+spec:
+  ports:
+    - name: "8195"
+      port: 8195
+      targetPort: 8195
+  selector:
+    io.kompose.service: delfin-exporter
+status:
+  loadBalancer: {}

@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.24.0 (4a2a0458)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: delfin-alert
+  name: delfin-alert
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: delfin-alert
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.24.0 (4a2a0458)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: delfin-alert
+    spec:
+      containers:
+        - args:
+            - alert
+          env:
+            - name: OS_COORDINATION__BACKEND_SERVER
+              value: redis:6379
+            - name: OS_DEFAULT__TRANSPORT_URL
+              value: rabbit://delfinuser:delfinpass@rabbitmq:5672//
+          image: sodafoundation/delfin:exporter
+          name: delfin-alert
+          resources: {}
+          volumeMounts:
+            - mountPath: /etc/delfin
+              name: delfin-config1
+            - mountPath: /var/lib/delfin
+              name: delfin-lib
+      restartPolicy: Always
+      volumes:
+        - hostPath:
+            path: /var/lib/delfin
+          name: delfin-lib
+        - name: delfin-config1
+          configMap:
+            name: delfin-config
+
+status: {}
